@@ -1,0 +1,111 @@
+#!/bin/bash
+# Installing a Hudson server for Android applications with Maven
+# These instructions were tested on Ubuntu Server 10.10 64-bit
+
+# If you use a 64-bit system, install 32-bit support for the Android SDK tools:
+sudo aptitude install ia32-libs
+
+# Upgrade the system
+sudo aptitude update && sudo aptitude dist-upgrade --purge && sudo aptitude autoclean
+# If any linux-image-* packages were upgraded, reboot: 'sudo reboot'
+
+# Make sure the server installs security updates automatically
+sudo aptitude install unattended-upgrades
+
+# Install Hudson according to http://hudson-labs.org/ --> Download --> Debian
+wget -q -O - http://pkg.hudson-labs.org/debian/hudson-labs.org.key | sudo apt-key add -
+echo deb http://pkg.hudson-labs.org/debian binary/ | sudo tee /etc/apt/sources.list.d/hudson.list > /dev/null
+sudo aptitude update
+sudo aptitude install hudson
+
+# Install and configure xinetd for port forward
+sudo aptitude install xinetd
+cat | sudo tee /etc/xinetd.d/redirect-80-to-hudson > /dev/null <<EOF
+service redirect-80-to-hudson
+{
+        port                    = 80
+        bind                    = 0.0.0.0
+        type                    = UNLISTED
+        disable                 = no
+        socket_type             = stream
+        wait                    = no
+        user                    = nobody
+        redirect                = 127.0.0.1 8080
+}
+EOF
+
+sudo /etc/init.d/xinetd reload
+
+# Install source control clients so Hudson can fetch source code
+sudo aptitude install subversion git-core
+
+# I like to become owner of the /opt directory, so I can easier install non-ubuntu-packaged software there:
+sudo chown -R $(id -u):$(id -g) /opt/
+
+# Download and unpack the latest Android SDK from http://developer.android.com/ --> SDK --> Download
+cd
+wget http://dl.google.com/android/android-sdk_r07-linux_x86.tgz
+cd /opt
+tar xzvf ~/android-sdk*.tgz
+ln -s android-sdk-* android-sdk
+
+# Download and install all Android SDK packages
+/opt/android-sdk/tools/android update sdk --no-ui --force
+
+# Not strictly necessary, but helps some projects
+echo ANDROID_HOME=/opt/android-sdk | sudo tee -a /etc/environment > /dev/null
+
+# Print what's left to do manually
+SERVER_IP=$(wget -q -O - http://www.whatismyip.com/automation/n09230945.asp)
+cat <<EOF
+Please perform these steps manually:
+
+1. Browse to http://$SERVER_IP and configure security for Hudson
+1.1. Manage Hudson --> Configure System
+1.1.1. Enable security
+1.1.2. Hudson's own user database
+1.1.3. Allow users to sign up
+1.1.4. Logged-in users can do anything
+1.1.5. Save
+1.2. Click 'sign-up' and register a user
+1.3. Manage Hudson --> Configure System
+1.3.1. Disable "Allow users to sign up"
+1.3.2. Save
+Later, you can go back and configure more specific permissions
+
+2. Manage Hudson -> Manage plugins -> Available
+2.1. Android Emulator Plugin
+2.2. Git Plugin
+2.3. Green Balls (suggested)
+2.4. -> Click Install
+2.5. -> When installed, click Restart
+
+3. Configure Hudson
+3.1. Manage Hudson --> Configure System
+3.2. Global properties, Environment variables
+3.2.1. ANDROID_HOME=/opt/android-sdk
+3.3. Android Emulator: /opt/android-sdk
+3.4. JDK: Add automatically installed Sun Java 6
+3.4. Maven: Add automatically installed Maven 2
+3.4.1. Set Global MAVEN_OPTS: -Xmx512m
+3.5. Configure an SMTP server:
+3.5.1. Type 'host youremaildomain.com' on the command line
+3.5.2. Pick the server with the lowest number as your SMTP server
+3.5.3. Enter your email address as System Admin E-mail Address
+3.6. Save
+
+4. Configure git
+4.1. sudo su - hudson -c 'git config --global --add user.name "Hudson Server"'
+4.1. sudo su - hudson -c 'git config --global --add user.email "your.real.email@goes.here"'
+
+5. Reboot: sudo reboot
+
+6. Create a new job:
+6.1. Choose Maven 2
+6.2. Enter SCM url
+6.3. Set SCM poll schedule
+6.4. For Maven goals, 'clean install -e' is good
+6.5. Enable Android Emulator
+6.5.1. Disable "Show emulator window"
+
+EOF
