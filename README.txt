@@ -1,2 +1,4 @@
-You can probably run this script as-is. However, some of the comments in it contain relevant information, so you might want to copy/paste one command at the time.
+This script contains all the commands and instructions you need to set up a Hudson server on which you can run Android builds headless, using Maven. You can add Ant yourself if you want that instead.
+
+You can probably run the script as-is. However, some of the comments in it contain relevant information, so you might want to copy/paste one command at the time.
 
