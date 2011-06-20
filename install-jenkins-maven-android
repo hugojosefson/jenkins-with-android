@@ -12,9 +12,9 @@ sudo aptitude update && sudo aptitude dist-upgrade --purge && sudo aptitude auto
 # Make sure the server installs security updates automatically
 sudo aptitude install unattended-upgrades
 
-# Install Jenkins according to http://jenkins-labs.org/ --> Download --> Debian
-wget -q -O - http://pkg.jenkins-labs.org/debian/jenkins-labs.org.key | sudo apt-key add -
-echo deb http://pkg.jenkins-labs.org/debian binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+# Install Jenkins according to http://jenkins-ci.org/ --> Download --> Debian
+wget -q -O - http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add -
+echo deb http://pkg.jenkins-ci.org/debian binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
 sudo aptitude update
 sudo aptitude install jenkins
 
