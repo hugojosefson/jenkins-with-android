@@ -56,7 +56,7 @@ ln -s android-sdk-* android-sdk
 echo ANDROID_HOME=/opt/android-sdk | sudo tee -a /etc/environment > /dev/null
 
 # Print what's left to do manually
-SERVER_IP=$(wget -q -O - http://www.whatismyip.com/automation/n09230945.asp)
+SERVER_IP=$(wget -q -O - http://automation.whatismyip.com/n09230945.asp)
 cat <<EOF
 Please perform these steps manually:
 
