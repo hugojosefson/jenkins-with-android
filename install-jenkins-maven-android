@@ -1,9 +1,9 @@
 #!/bin/bash
 # Installing a Jenkins server for Android applications with Maven
-# These instructions were tested on Ubuntu Server 10.10 64-bit
+# These instructions were tested on Ubuntu Server 11.04 32-bit
 
 # If you use a 64-bit system, install 32-bit support for the Android SDK tools:
-sudo aptitude install ia32-libs
+# sudo aptitude install ia32-libs
 
 # Upgrade the system
 sudo aptitude update && sudo aptitude dist-upgrade --purge && sudo aptitude autoclean
