@@ -44,7 +44,7 @@ sudo chown -R $(id -u):$(id -g) /opt/
 
 # Download and unpack the latest Android SDK from http://developer.android.com/ --> SDK --> Download
 cd
-wget http://dl.google.com/android/android-sdk_r09-linux_x86.tgz
+wget http://dl.google.com/android/android-sdk_r11-linux_x86.tgz
 cd /opt
 tar xzvf ~/android-sdk*.tgz
 ln -s android-sdk-* android-sdk
