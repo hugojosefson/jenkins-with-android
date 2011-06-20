@@ -1,5 +1,5 @@
 #!/bin/bash
-# Installing a Hudson server for Android applications with Maven
+# Installing a Jenkins server for Android applications with Maven
 # These instructions were tested on Ubuntu Server 10.10 64-bit
 
 # If you use a 64-bit system, install 32-bit support for the Android SDK tools:
@@ -12,16 +12,16 @@ sudo aptitude update && sudo aptitude dist-upgrade --purge && sudo aptitude auto
 # Make sure the server installs security updates automatically
 sudo aptitude install unattended-upgrades
 
-# Install Hudson according to http://hudson-labs.org/ --> Download --> Debian
-wget -q -O - http://pkg.hudson-labs.org/debian/hudson-labs.org.key | sudo apt-key add -
-echo deb http://pkg.hudson-labs.org/debian binary/ | sudo tee /etc/apt/sources.list.d/hudson.list > /dev/null
+# Install Jenkins according to http://jenkins-labs.org/ --> Download --> Debian
+wget -q -O - http://pkg.jenkins-labs.org/debian/jenkins-labs.org.key | sudo apt-key add -
+echo deb http://pkg.jenkins-labs.org/debian binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
 sudo aptitude update
-sudo aptitude install hudson
+sudo aptitude install jenkins
 
 # Install and configure xinetd for port forward
 sudo aptitude install xinetd
-cat | sudo tee /etc/xinetd.d/redirect-80-to-hudson > /dev/null <<EOF
-service redirect-80-to-hudson
+cat | sudo tee /etc/xinetd.d/redirect-80-to-jenkins > /dev/null <<EOF
+service redirect-80-to-jenkins
 {
         port                    = 80
         bind                    = 0.0.0.0
@@ -36,7 +36,7 @@ EOF
 
 sudo /etc/init.d/xinetd reload
 
-# Install source control clients so Hudson can fetch source code
+# Install source control clients so Jenkins can fetch source code
 sudo aptitude install subversion git-core
 
 # I like to become owner of the /opt directory, so I can easier install non-ubuntu-packaged software there:
@@ -60,28 +60,28 @@ SERVER_IP=$(wget -q -O - http://www.whatismyip.com/automation/n09230945.asp)
 cat <<EOF
 Please perform these steps manually:
 
-1. Browse to http://$SERVER_IP and configure security for Hudson
-1.1. Manage Hudson --> Configure System
+1. Browse to http://$SERVER_IP and configure security for Jenkins
+1.1. Manage Jenkins --> Configure System
 1.1.1. Enable security
-1.1.2. Hudson's own user database
+1.1.2. Jenkins's own user database
 1.1.3. Allow users to sign up
 1.1.4. Logged-in users can do anything
 1.1.5. Save
 1.2. Click 'sign-up' and register a user
-1.3. Manage Hudson --> Configure System
+1.3. Manage Jenkins --> Configure System
 1.3.1. Disable "Allow users to sign up"
 1.3.2. Save
 Later, you can go back and configure more specific permissions
 
-2. Manage Hudson -> Manage plugins -> Available
+2. Manage Jenkins -> Manage plugins -> Available
 2.1. Android Emulator Plugin
 2.2. Git Plugin
 2.3. Green Balls (suggested)
 2.4. -> Click Install
 2.5. -> When installed, click Restart
 
-3. Configure Hudson
-3.1. Manage Hudson --> Configure System
+3. Configure Jenkins
+3.1. Manage Jenkins --> Configure System
 3.2. Global properties, Environment variables
 3.2.1. ANDROID_HOME=/opt/android-sdk
 3.3. Android Emulator: /opt/android-sdk
@@ -95,8 +95,8 @@ Later, you can go back and configure more specific permissions
 3.6. Save
 
 4. Configure git
-4.1. sudo su - hudson -c 'git config --global --add user.name "Hudson Server"'
-4.1. sudo su - hudson -c 'git config --global --add user.email "your.real.email@goes.here"'
+4.1. sudo su - jenkins -c 'git config --global --add user.name "Jenkins Server"'
+4.1. sudo su - jenkins -c 'git config --global --add user.email "your.real.email@goes.here"'
 
 5. Reboot: sudo reboot
 
