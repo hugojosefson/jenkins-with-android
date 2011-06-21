@@ -1,6 +1,6 @@
 #!/bin/bash
 # Installing a Jenkins server for Android applications with Maven
-# These instructions were tested on Ubuntu Server 11.04 32-bit
+# These instructions were tested on Ubuntu Server 11.04 32-bit (ami-1aad5273)
 
 # If you use a 64-bit system, install 32-bit support for the Android SDK tools:
 # sudo aptitude install ia32-libs
@@ -78,19 +78,19 @@ Later, you can go back and configure more specific permissions
 2.2. Git Plugin
 2.3. Green Balls (suggested)
 2.4. -> Click Install
-2.5. -> When installed, click Restart
+2.5. -> Enable "Restart Jenkins when installation..."
 
 3. Configure Jenkins
 3.1. Manage Jenkins --> Configure System
 3.2. Global properties, Environment variables
 3.2.1. ANDROID_HOME=/opt/android-sdk
-3.3. Android Emulator: /opt/android-sdk
+3.3. Android SDK root: /opt/android-sdk
 3.4. JDK: Add automatically installed Sun Java 6
-3.4. Maven: Add automatically installed Maven 2
+3.4. Maven: Add automatically installed Maven 3
 3.4.1. Set Global MAVEN_OPTS: -Xmx512m
 3.5. Configure an SMTP server:
 3.5.1. Type 'host youremaildomain.com' on the command line
-3.5.2. Pick the server with the lowest number as your SMTP server
+3.5.2. Pick the mail server with the lowest number as your SMTP server
 3.5.3. Enter your email address as System Admin E-mail Address
 3.6. Save
 
@@ -101,7 +101,7 @@ Later, you can go back and configure more specific permissions
 5. Reboot: sudo reboot
 
 6. Create a new job:
-6.1. Choose Maven 2
+6.1. Choose Maven 3
 6.2. Enter SCM url
 6.3. Set SCM poll schedule
 6.4. For Maven goals, 'clean install -e' is good
